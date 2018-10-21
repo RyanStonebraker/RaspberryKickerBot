@@ -1,0 +1,30 @@
+{
+  "name": "raspberrykickerbot",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "description": "Autonomous path planning testing platform using a raspberry pi. Programmed with the help of raspberry redbull kickers.",
+  "dependencies": {
+    "electron-prebuilt": "^1.4.13"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanStonebraker/RaspberryKickerBot.git"
+  },
+  "keywords": [
+    "autonomous",
+    "path",
+    "planning",
+    "raspberry",
+    "pi"
+  ],
+  "author": "Ryan Stonebraker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RyanStonebraker/RaspberryKickerBot/issues"
+  },
+  "homepage": "https://github.com/RyanStonebraker/RaspberryKickerBot#readme"
+}
