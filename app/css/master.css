@@ -11,9 +11,42 @@ header {
   width: 100%;
 }
 
-header h1 {
+header h1,
+section.manual-mode,
+section.stop-mode {
   margin: 0;
   text-align: center;
   font-size: 18px;
   font-family: 'Open Sans';
+}
+
+header section.hide {
+  visibility: hidden;
+  display: none;
+}
+
+section.manual-mode,
+section.stop-mode {
+  display: flex;
+  justify-content: center;
+}
+
+section.manual-mode h2 {
+  margin: 0;
+  background-color: white;
+  border-radius: 30px;
+  color: black;
+  padding: 10px;
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+section.stop-mode h2 {
+  margin: 0;
+  background-color: red;
+  border-radius: 30px;
+  color: white;
+  padding: 10px;
+  font-size: 25px;
+  margin-top: 15px;
 }

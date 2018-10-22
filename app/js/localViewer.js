@@ -7,6 +7,11 @@ var viewer = {
     lineColor: 'white'
 };
 
+var telemetry = {
+  manualMode: false,
+  stopMode: false
+};
+
 var key = {
   "manual": "M".charCodeAt(),
     "up": "W".charCodeAt(),
@@ -86,7 +91,6 @@ LocalViewer.prototype.relDistance = function (runningTotal) {
   if (!runningTotal)
     return false;
   let distance = Math.sqrt(runningTotal.x * runningTotal.x + runningTotal.y * runningTotal.y);
-  console.log(distance);
   return distance;
 }
 
@@ -112,7 +116,7 @@ LocalViewer.prototype.drawHistory = function () {
   }
 
   // Reset origin
-  for (let i = 0; i< this.robot.history.length; ++i)
+  for (let i = 0; i < this.robot.history.length; ++i)
     this.localCtx.translate(this.robot.history[i].x, -this.robot.history[i].y);
 }
 
@@ -133,16 +137,28 @@ LocalViewer.prototype.drawRobot = function () {
 }
 
 LocalViewer.prototype.keys = function (evt) {
-  switch(evt.keyCode) {
-    case key.manual:
-      break;
-    case key.right:
-      this.robot.angle += 5;
-      break;
-    case key.left:
-      this.robot.angle -= 5;
-      break;
-    case key.forward:
-      break;
+  if (evt.keyCode === key.stop) {
+    let stopMode = document.querySelector("section.stop-mode");
+    stopMode.classList.toggle('hide');
+    telemetry.stopMode = telemetry.stopMode ? false : true;
+    return;
+  }
+  if (!telemetry.stopMode && evt.keyCode === key.manual) {
+    let manualMode = document.querySelector("section.manual-mode");
+    manualMode.classList.toggle('hide');
+    telemetry.manualMode = telemetry.manualMode ? false : true;
+    return;
+  }
+  if (!telemetry.stopMode && telemetry.manualMode) {
+    switch(evt.keyCode) {
+      case key.right:
+          this.robot.angle += 5;
+        break;
+      case key.left:
+          this.robot.angle -= 5;
+        break;
+      case key.forward:
+        break;
+    }
   }
 }
