@@ -2,7 +2,7 @@ var viewer = {
     width: 0,
     height: 0,
     refreshRate: 60,
-    minHistoryPrecision: 70,
+    minHistoryPrecision: 0,
     backgroundColor: 'rgb(25,25,25)',
     lineColor: 'white'
 };
@@ -48,22 +48,22 @@ LocalViewer.prototype.robot = {
     "y": 0
   },
   "history": [
-    {
-      "x": 50,
-      "y": 50
-    },
-    {
-      "x": 50,
-      "y": 50
-    },
-    {
-      "x": 50,
-      "y": 50
-    },
-    {
-      "x": 50,
-      "y": 50
-    }
+    // {
+    //   "x": 50,
+    //   "y": 50
+    // },
+    // {
+    //   "x": 50,
+    //   "y": 50
+    // },
+    // {
+    //   "x": 50,
+    //   "y": 50
+    // },
+    // {
+    //   "x": 50,
+    //   "y": 50
+    // }
   ]
 };
 
@@ -98,17 +98,21 @@ LocalViewer.prototype.relDistance = function (runningTotal) {
 LocalViewer.prototype.drawHistory = function () {
   let runningTotal = {
     "x": 0,
-    "y": 0
+    "y": 0,
+    "angle": 0
   };
   for (let i = 0; i < this.robot.history.length; ++i) {
     this.localCtx.translate(-this.robot.history[i].x, this.robot.history[i].y);
     if ((runningTotal.x || runningTotal.y) && this.relDistance(runningTotal) < viewer.minHistoryPrecision) {
       runningTotal.x += this.robot.history[i].x;
       runningTotal.y += this.robot.history[i].y;
+      runningTotal.angle += this.robot.history[i].angle;
       continue;
     }
     runningTotal.x = this.robot.history[i].x;
     runningTotal.y = this.robot.history[i].y;
+    runningTotal.angle = this.robot.history[i].angle;
+
     this.localCtx.beginPath();
     this.localCtx.arc(viewer.width/2, viewer.height/2, 10, 0, 2 * Math.PI, false);
     this.localCtx.fillStyle = viewer.lineColor;

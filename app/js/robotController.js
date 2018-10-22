@@ -13,17 +13,31 @@ RobotController.prototype.initConnection = function () {
 }
 
 RobotController.prototype.forward = function () {
+  let xMove = 5 * Math.sin(this.robot.angle * Math.PI / 180);
+  let yMove = -5 * Math.cos(this.robot.angle * Math.PI / 180);
   if (!this.status.connected) {
-    this.robot.screenPosition.x += 5 * Math.sin(this.robot.angle * Math.PI / 180);
-    this.robot.screenPosition.y -= 5 * Math.cos(this.robot.angle * Math.PI / 180);;
+    this.robot.screenPosition.x += xMove;
+    this.robot.screenPosition.y += yMove;
   }
+
+  this.robot.history.unshift({
+    "x": xMove,
+    "y": -yMove
+  });
 }
 
 RobotController.prototype.backward = function () {
+  let xMove = -5 * Math.sin(this.robot.angle * Math.PI / 180);
+  let yMove = 5 * Math.cos(this.robot.angle * Math.PI / 180);
   if (!this.status.connected) {
-    this.robot.screenPosition.x -= 5 * Math.sin(this.robot.angle * Math.PI / 180);
-    this.robot.screenPosition.y += 5 * Math.cos(this.robot.angle * Math.PI / 180);;
+    this.robot.screenPosition.x += xMove;
+    this.robot.screenPosition.y += yMove;
   }
+
+  this.robot.history.unshift({
+    "x": xMove,
+    "y": -yMove
+  });
 }
 
 RobotController.prototype.right = function () {
