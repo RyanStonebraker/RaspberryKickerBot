@@ -13,7 +13,8 @@ header {
 
 header h1,
 section.manual-mode,
-section.stop-mode {
+section.stop-mode,
+section.status {
   margin: 0;
   text-align: center;
   font-size: 18px;
@@ -49,4 +50,26 @@ section.stop-mode h2 {
   padding: 10px;
   font-size: 25px;
   margin-top: 15px;
+}
+
+section.status {
+  position: absolute;
+  top: 0px;
+  right: 15px;
+}
+
+section.status h2 {
+  margin: 0;
+  color: white;
+  padding: 10px;
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+section.status h2.message {
+  color: green;
+}
+
+section.status h2.error {
+  color: red;
 }
