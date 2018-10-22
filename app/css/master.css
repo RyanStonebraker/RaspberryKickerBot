@@ -1,0 +1,19 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+header {
+  -webkit-app-region: drag;
+  color: whitesmoke;
+  position: absolute;
+  width: 100%;
+}
+
+header h1 {
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-family: 'Open Sans';
+}
