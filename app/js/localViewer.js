@@ -2,7 +2,9 @@ var viewer = {
     width: 0,
     height: 0,
     refreshRate: 60,
-    minHistoryPrecision: 5
+    minHistoryPrecision: 70,
+    backgroundColor: 'rgb(25,25,25)',
+    lineColor: 'white'
 };
 
 var key = {
@@ -42,8 +44,20 @@ LocalViewer.prototype.robot = {
   },
   "history": [
     {
-      "x": 10,
-      "y": 10
+      "x": 50,
+      "y": 50
+    },
+    {
+      "x": 50,
+      "y": 50
+    },
+    {
+      "x": 50,
+      "y": 50
+    },
+    {
+      "x": 50,
+      "y": 50
     }
   ]
 };
@@ -61,33 +75,59 @@ LocalViewer.prototype.updateLocalViewer = function () {
 };
 
 LocalViewer.prototype.drawScreen = function () {
-  this.localCtx.fillStyle = "rgb(25,25,25)";
+  this.localCtx.fillStyle = viewer.backgroundColor;
   this.localCtx.fillRect(0,0,viewer.width,viewer.height);
 
   this.drawHistory();
   this.drawRobot();
 }
 
-// draws history points with 0,0 as center and +,+ to the left, top
+LocalViewer.prototype.relDistance = function (runningTotal) {
+  if (!runningTotal)
+    return false;
+  let distance = Math.sqrt(runningTotal.x * runningTotal.x + runningTotal.y * runningTotal.y);
+  console.log(distance);
+  return distance;
+}
+
+// draws history points with 0,0 as center and +,+ to the right, top
 LocalViewer.prototype.drawHistory = function () {
+  let runningTotal = {
+    "x": 0,
+    "y": 0
+  };
   for (let i = 0; i < this.robot.history.length; ++i) {
-    this.localCtx.translate(this.robot.history[i].x, this.robot.history[i].y);
+    this.localCtx.translate(-this.robot.history[i].x, this.robot.history[i].y);
+    if ((runningTotal.x || runningTotal.y) && this.relDistance(runningTotal) < viewer.minHistoryPrecision) {
+      runningTotal.x += this.robot.history[i].x;
+      runningTotal.y += this.robot.history[i].y;
+      continue;
+    }
+    runningTotal.x = this.robot.history[i].x;
+    runningTotal.y = this.robot.history[i].y;
     this.localCtx.beginPath();
     this.localCtx.arc(viewer.width/2, viewer.height/2, 10, 0, 2 * Math.PI, false);
-    this.localCtx.fillStyle = "white";
+    this.localCtx.fillStyle = viewer.lineColor;
     this.localCtx.fill();
-    this.localCtx.translate(-this.robot.history[i].x, -this.robot.history[i].y);
   }
+
+  // Reset origin
+  for (let i = 0; i< this.robot.history.length; ++i)
+    this.localCtx.translate(this.robot.history[i].x, -this.robot.history[i].y);
 }
 
 LocalViewer.prototype.drawRobot = function () {
-  this.localCtx.strokeStyle = "white";
+  this.localCtx.strokeStyle = viewer.lineColor;
   let robotMidX = this.robot.screenPosition.x + this.robot.width/2;
   let robotMidY = this.robot.screenPosition.y + this.robot.height/2;
   this.localCtx.save();
   this.localCtx.translate(robotMidX, robotMidY);
   this.localCtx.rotate(this.robot.angle * Math.PI/180);
   this.localCtx.translate(-robotMidX, -robotMidY);
+
+  this.localCtx.fillStyle = viewer.backgroundColor;
+  this.localCtx.fillRect(this.robot.screenPosition.x, this.robot.screenPosition.y, this.robot.width, this.robot.height);
+
   this.localCtx.strokeRect(this.robot.screenPosition.x, this.robot.screenPosition.y, this.robot.width, this.robot.height);
   this.localCtx.restore();
 }
