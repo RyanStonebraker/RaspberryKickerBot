@@ -14,8 +14,8 @@ var telemetry = {
 
 var key = {
   "manual": "M".charCodeAt(),
-    "up": "W".charCodeAt(),
-    "down": "S".charCodeAt(),
+    "forward": "W".charCodeAt(),
+    "backward": "S".charCodeAt(),
     "left": "A".charCodeAt(),
     "right": "D".charCodeAt(),
   "stop": " ".charCodeAt()
@@ -34,7 +34,7 @@ function LocalViewer(cnv) {
     this.robot.screenPosition.y = viewer.height/2 - this.robot.height/2;
     this.localCtx.clearRect(0, 0, viewer.width, viewer.height);
   }
-
+  this.robotController = new RobotController(this.robot);
   this.updateLocalViewer();
   window.addEventListener('keydown', this.keys.bind(this), true);
 }
@@ -152,12 +152,16 @@ LocalViewer.prototype.keys = function (evt) {
   if (!telemetry.stopMode && telemetry.manualMode) {
     switch(evt.keyCode) {
       case key.right:
-          this.robot.angle += 5;
+        this.robotController.right();
         break;
       case key.left:
-          this.robot.angle -= 5;
+        this.robotController.left();
         break;
       case key.forward:
+        this.robotController.forward();
+        break;
+      case key.backward:
+        this.robotController.backward();
         break;
     }
   }
