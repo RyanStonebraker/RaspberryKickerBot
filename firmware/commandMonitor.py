@@ -137,6 +137,6 @@ while True:
         for command in currentFeed['commands'][len(commandHistory):]:
             commandHistory.append(command)
             executeCommand(command)
-        sendTelemetry(telemetry, config.postURL)
+        telemetryResponder.sendTelemetry(telemetry, config['postURL'])
 
     sleep(0.1)

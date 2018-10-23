@@ -1,9 +1,9 @@
 import requests
 import json
 
-# headers = {
-#     'Content-Type': 'application/json',
-# }
+headers = {
+    'Content-Type': 'application/json',
+}
 
 sender = {
     'identifier': 'rpi.local',
