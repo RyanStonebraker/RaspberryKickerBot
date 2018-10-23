@@ -7,11 +7,6 @@ var viewer = {
     lineColor: 'white'
 };
 
-var telemetry = {
-  manualMode: false,
-  stopMode: false
-};
-
 var key = {
   "manual": "M".charCodeAt(),
     "forward": "W".charCodeAt(),
@@ -47,24 +42,7 @@ LocalViewer.prototype.robot = {
     "x": 0,
     "y": 0
   },
-  "history": [
-    // {
-    //   "x": 50,
-    //   "y": 50
-    // },
-    // {
-    //   "x": 50,
-    //   "y": 50
-    // },
-    // {
-    //   "x": 50,
-    //   "y": 50
-    // },
-    // {
-    //   "x": 50,
-    //   "y": 50
-    // }
-  ]
+  "history": []
 };
 
 LocalViewer.prototype.updateLocalViewer = function () {
@@ -144,16 +122,16 @@ LocalViewer.prototype.keys = function (evt) {
   if (evt.keyCode === key.stop) {
     let stopMode = document.querySelector("section.stop-mode");
     stopMode.classList.toggle('hide');
-    telemetry.stopMode = telemetry.stopMode ? false : true;
+    this.robotController.toggleStopMode();
     return;
   }
-  if (!telemetry.stopMode && evt.keyCode === key.manual) {
+  if (!this.robotController.status.stopMode && evt.keyCode === key.manual) {
     let manualMode = document.querySelector("section.manual-mode");
     manualMode.classList.toggle('hide');
-    telemetry.manualMode = telemetry.manualMode ? false : true;
+    this.robotController.toggleManualMode();
     return;
   }
-  if (!telemetry.stopMode && telemetry.manualMode) {
+  if (!this.robotController.status.stopMode && this.robotController.status.manualMode) {
     switch(evt.keyCode) {
       case key.right:
         this.robotController.right();

@@ -21,6 +21,10 @@ section.status {
   font-family: 'Open Sans';
 }
 
+header h1 {
+  text-shadow: 0 0 10px rgb(25,25,25);
+}
+
 header section.hide {
   visibility: hidden;
   display: none;
@@ -40,6 +44,7 @@ section.manual-mode h2 {
   padding: 10px;
   font-size: 20px;
   margin-top: 15px;
+  box-shadow: 0 0 10px rgb(25,25,25);
 }
 
 section.stop-mode h2 {
@@ -50,6 +55,7 @@ section.stop-mode h2 {
   padding: 10px;
   font-size: 25px;
   margin-top: 15px;
+  box-shadow: 0 0 10px rgb(25,25,25);
 }
 
 section.status {
@@ -64,6 +70,7 @@ section.status h2 {
   padding: 10px;
   font-size: 20px;
   margin-top: 15px;
+  text-shadow: 0 0 10px rgb(25,25,25);
 }
 
 section.status h2.message {
