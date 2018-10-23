@@ -139,7 +139,7 @@ RobotController.prototype.backward = function (stepSize = 20) {
 
 RobotController.prototype.right = function (stepSize = 5) {
   this.pushCommand("rotate", {
-    "distance": stepSize
+    "angle": -stepSize
   });
 
   this.robot.angle += stepSize;
@@ -147,7 +147,7 @@ RobotController.prototype.right = function (stepSize = 5) {
 
 RobotController.prototype.left = function (stepSize = 5) {
   this.pushCommand("rotate", {
-    "distance": -stepSize
+    "angle": stepSize
   });
 
   this.robot.angle -= stepSize;
