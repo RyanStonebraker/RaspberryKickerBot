@@ -7,14 +7,15 @@ headers = {
 
 data = {
     'sender': {
-        'identifier': 'rpi',
+        'identifier': 'rpi.local',
         'type': 'telemetry'
     },
-
-    'instruction': 'forward',
-    'parameters': {
-        "distance": 10
-    }
+    'displacement': {
+        'x': 0,
+        'y': 0
+    },
+    'angle': 0,
+    'ultrasonic': 0
 }
 url = 'http://localhost:5000/telemetry/post'
 response = requests.post(url, headers=headers, data=json.dumps(data))

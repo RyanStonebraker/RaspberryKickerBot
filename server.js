@@ -38,7 +38,7 @@ router.get('/', function (request, response) {
 
 router.post('/post', function (request, response) {
   let postData = request.body;
-
+  console.log(postData);
   let feed = null;
   let id = null;
   let validPost = false;
@@ -63,6 +63,11 @@ router.post('/post', function (request, response) {
   }
 
   feed.push(currentData);
+
+  if (id === "rpi.local")
+    robotFeed.waitingForPi = false;
+  else
+    robotFeed.waitingForPi = true;
 
   response.send(robotFeed);
 });
