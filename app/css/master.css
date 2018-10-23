@@ -36,6 +36,12 @@ section.stop-mode {
   justify-content: center;
 }
 
+section.manual-mode h2:hover {
+  background-color: rgb(220,220,220);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
 section.manual-mode h2 {
   margin: 0;
   background-color: white;
@@ -45,6 +51,7 @@ section.manual-mode h2 {
   font-size: 20px;
   margin-top: 15px;
   box-shadow: 0 0 10px rgb(25,25,25);
+  transition: all 0.1s ease;
 }
 
 section.stop-mode h2 {
@@ -56,6 +63,13 @@ section.stop-mode h2 {
   font-size: 25px;
   margin-top: 15px;
   box-shadow: 0 0 10px rgb(25,25,25);
+  transition: all 0.1s ease;
+}
+
+section.stop-mode h2:hover {
+  background-color: rgb(185,0,0);
+  cursor: pointer;
+  transition: all 0.1s ease;
 }
 
 section.status {

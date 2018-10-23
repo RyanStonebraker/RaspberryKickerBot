@@ -32,6 +32,8 @@ function LocalViewer(cnv) {
   this.robotController = new RobotController(this.robot);
   this.updateLocalViewer();
   window.addEventListener('keydown', this.keys.bind(this), true);
+  document.querySelector("section.manual-mode").addEventListener("click", this.fullToggleManual.bind(this));
+  document.querySelector("section.stop-mode").addEventListener("click", this.fullToggleStop.bind(this));
 }
 
 LocalViewer.prototype.robot = {
@@ -118,17 +120,25 @@ LocalViewer.prototype.drawRobot = function () {
   this.localCtx.restore();
 }
 
+LocalViewer.prototype.fullToggleManual = function () {
+  let manualMode = document.querySelector("section.manual-mode");
+  manualMode.classList.toggle('hide');
+  this.robotController.toggleManualMode();
+}
+
+LocalViewer.prototype.fullToggleStop = function () {
+  let stopMode = document.querySelector("section.stop-mode");
+  stopMode.classList.toggle('hide');
+  this.robotController.toggleStopMode();
+}
+
 LocalViewer.prototype.keys = function (evt) {
   if (evt.keyCode === key.stop) {
-    let stopMode = document.querySelector("section.stop-mode");
-    stopMode.classList.toggle('hide');
-    this.robotController.toggleStopMode();
+    this.fullToggleStop();
     return;
   }
   if (!this.robotController.status.stopMode && evt.keyCode === key.manual) {
-    let manualMode = document.querySelector("section.manual-mode");
-    manualMode.classList.toggle('hide');
-    this.robotController.toggleManualMode();
+    this.fullToggleManual();
     return;
   }
   if (!this.robotController.status.stopMode && this.robotController.status.manualMode) {
