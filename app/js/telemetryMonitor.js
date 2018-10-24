@@ -1,4 +1,5 @@
 var http = require("http");
+var os = require('os');
 
 function TelemetryMonitor (robot) {
   this.robot = robot;
@@ -53,9 +54,23 @@ TelemetryMonitor.prototype.monitor = function () {
           'x': self.robot.telemetry.telemetry[i].displacement.x,
           'y': self.robot.telemetry.telemetry[i].displacement.y
         });
-        console.log(self.robot.angle);
         self.robot.angle = self.robot.telemetry.telemetry[i].angle % 360;
       }
+
+      // var cpus = os.cpus();
+      // for(var i = 0, len = cpus.length; i < len; i++) {
+      //     console.log("CPU %s:", i);
+      //     var cpu = cpus[i], total = 0;
+      //
+      //     for(var type in cpu.times) {
+      //         total += cpu.times[type];
+      //     }
+      //
+      //     for(type in cpu.times) {
+      //         console.log("\t", type, Math.round(100 * cpu.times[type] / total));
+      //     }
+      // }
+      // console.log("Interval Time:", os.freemem()/os.totalmem() * 100);
     }
   }, 10);
 }

@@ -131,7 +131,7 @@ def executeCommand(command):
 while True:
     currentFeed = requests.get(config['feedURL']).json()
     if not currentFeed['waitingForPi']:
-        sleep(0.2)
+        sleep(0.05)
         continue
 
     if len(currentFeed['commands']) > len(commandHistory):
@@ -142,6 +142,6 @@ while True:
 
         if not telemetrySent:
             print("ERROR: TELEMETRY NOT SENT:", telemetrySent)
-            sleep(0.5)
+            sleep(0.1)
 
-    sleep(0.1)
+    sleep(0.01)

@@ -38,6 +38,25 @@ function LocalViewer(cnv) {
   window.addEventListener('keydown', this.keys.bind(this), true);
   document.querySelector("section.manual-mode").addEventListener("click", this.fullToggleManual.bind(this));
   document.querySelector("section.stop-mode").addEventListener("click", this.fullToggleStop.bind(this));
+
+  this.lastTimePressed = new Array(15);
+  let self = this;
+  window.addEventListener("gamepadconnected", function(e) {
+    self.lastController = {};
+    setInterval(function () {
+      var xboxController = navigator.getGamepads()[e.gamepad.index];
+      if (xboxController.buttons[1].pressed && (!self.lastTimePressed[1] || xboxController.timestamp - self.lastTimePressed[1] > 490000000)) {
+        this.fullToggleStop();
+        self.lastTimePressed[1] = xboxController.timestamp;
+      }
+      else if (xboxController.buttons[0].pressed && (!self.lastTimePressed[0] || xboxController.timestamp - self.lastTimePressed[0] > 490000000)) {
+        this.fullToggleManual();
+        self.lastTimePressed[0] = xboxController.timestamp;
+      }
+      self.lastController = xboxController;
+    }.bind(self), 5);
+
+  });
 }
 
 LocalViewer.prototype.robot = {
