@@ -15,8 +15,6 @@ TelemetryMonitor.prototype.updateViewer = function (xMove, yMove, angle) {
   this.robot.angle = angle;
 }
 
-
-// use HTTP library to do a get request for telemetry
 TelemetryMonitor.prototype.getTelemetry = function () {
   let self = this;
   http.get({
@@ -52,25 +50,12 @@ TelemetryMonitor.prototype.monitor = function () {
       for (let i = self.robot.history.length; i < self.robot.telemetry.telemetry.length; ++i) {
         self.robot.history.unshift({
           'x': self.robot.telemetry.telemetry[i].displacement.x,
-          'y': self.robot.telemetry.telemetry[i].displacement.y
+          'y': self.robot.telemetry.telemetry[i].displacement.y,
+          'angle': self.robot.telemetry.telemetry[i].angle,
+          'obstacle': self.robot.telemetry.telemetry[i].ultrasonic
         });
         self.robot.angle = self.robot.telemetry.telemetry[i].angle % 360;
       }
-
-      // var cpus = os.cpus();
-      // for(var i = 0, len = cpus.length; i < len; i++) {
-      //     console.log("CPU %s:", i);
-      //     var cpu = cpus[i], total = 0;
-      //
-      //     for(var type in cpu.times) {
-      //         total += cpu.times[type];
-      //     }
-      //
-      //     for(type in cpu.times) {
-      //         console.log("\t", type, Math.round(100 * cpu.times[type] / total));
-      //     }
-      // }
-      // console.log("Interval Time:", os.freemem()/os.totalmem() * 100);
     }
   }, 10);
 }

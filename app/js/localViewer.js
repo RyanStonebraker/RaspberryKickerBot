@@ -4,7 +4,9 @@ var viewer = {
     refreshRate: 60,
     minHistoryPrecision: 0,
     backgroundColor: 'rgb(25,25,25)',
-    lineColor: 'white'
+    lineColor: 'white',
+    obstacleColor: 'red',
+    obstacleDistanceLimit: 150
 };
 
 var key = {
@@ -98,29 +100,34 @@ LocalViewer.prototype.relDistance = function (runningTotal) {
   return distance;
 }
 
+LocalViewer.prototype.drawPathPoint = function () {
+  this.localCtx.beginPath();
+  this.localCtx.arc(viewer.width/2, viewer.height/2, 10, 0, 2 * Math.PI, false);
+  this.localCtx.fillStyle = viewer.lineColor;
+  this.localCtx.fill();
+}
+
 // draws history points with 0,0 as center and +,+ to the right, top
 LocalViewer.prototype.drawHistory = function () {
-  let runningTotal = {
-    "x": 0,
-    "y": 0,
-    "angle": 0
-  };
+  // let runningTotal = {
+  //   "x": 0,
+  //   "y": 0,
+  //   "angle": 0
+  // };
   for (let i = 0; i < this.robot.history.length; ++i) {
     this.localCtx.translate(-this.robot.history[i].x, this.robot.history[i].y);
-    if ((runningTotal.x || runningTotal.y) && this.relDistance(runningTotal) < viewer.minHistoryPrecision) {
-      runningTotal.x += this.robot.history[i].x;
-      runningTotal.y += this.robot.history[i].y;
-      runningTotal.angle += this.robot.history[i].angle;
-      continue;
-    }
-    runningTotal.x = this.robot.history[i].x;
-    runningTotal.y = this.robot.history[i].y;
-    runningTotal.angle = this.robot.history[i].angle;
+    // if ((runningTotal.x || runningTotal.y) && this.relDistance(runningTotal) < viewer.minHistoryPrecision) {
+    //   runningTotal.x += this.robot.history[i].x;
+    //   runningTotal.y += this.robot.history[i].y;
+    //   runningTotal.angle = this.robot.history[i].angle;
+    //   continue;
+    // }
+    // runningTotal.x = this.robot.history[i].x;
+    // runningTotal.y = this.robot.history[i].y;
+    // runningTotal.angle = this.robot.history[i].angle;
 
-    this.localCtx.beginPath();
-    this.localCtx.arc(viewer.width/2, viewer.height/2, 10, 0, 2 * Math.PI, false);
-    this.localCtx.fillStyle = viewer.lineColor;
-    this.localCtx.fill();
+    this.drawPathPoint();
+    this.drawObstacle(this.robot.history[i]);
   }
 
   // Reset origin
@@ -142,6 +149,18 @@ LocalViewer.prototype.drawRobot = function () {
 
   this.localCtx.strokeRect(this.robot.screenPosition.x, this.robot.screenPosition.y, this.robot.width, this.robot.height);
   this.localCtx.restore();
+}
+
+LocalViewer.prototype.drawObstacle = function (currentRobot) {
+  let distanceToObstacle = currentRobot.obstacle;
+  if (distanceToObstacle && distanceToObstacle < viewer.obstacleDistanceLimit) {
+    let obstacleXDist = Math.sin(currentRobot.angle * Math.PI/180) * distanceToObstacle;
+    let obstacleYDist = Math.cos(currentRobot.angle * Math.PI/180) * distanceToObstacle;
+    this.localCtx.beginPath();
+    this.localCtx.arc(viewer.width/2 - obstacleXDist, viewer.height/2 - obstacleYDist, 10, 0, 2 * Math.PI, false);
+    this.localCtx.fillStyle = viewer.obstacleColor;
+    this.localCtx.fill();
+  }
 }
 
 LocalViewer.prototype.fullToggleManual = function () {
