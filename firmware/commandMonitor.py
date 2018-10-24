@@ -6,6 +6,8 @@ import math
 
 import telemetryResponder
 
+import random
+
 commandHistory = []
 
 config = {
@@ -115,6 +117,7 @@ def executeCommand(command):
         # driveForward(abs(cParams['distance']/config['velocity']))
         telemetry['displacement']['x'] = -config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
         telemetry['displacement']['y'] = config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
+        telemetry['ultrasonic'] = random.random() * 50 + 200 if random.random() * 100 - 95 > 0 else 0
     elif command['instruction'] == "backward":
         # driveBackward(abs(cParams['distance']/config['velocity']))
         telemetry['displacement']['x'] = config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
@@ -122,6 +125,7 @@ def executeCommand(command):
     elif command['instruction'] == "rotate":
         angleTime = abs(cParams['angle']/config['angularVelocity'])
         telemetry['angle'] += cParams['angle']
+        telemetry['ultrasonic'] = random.random() * 50 + 200 if random.random() * 100 - 93 > 0 else 0
         # if cParams['angle'] < 0:
         #     rotateRight(angleTime)
         # else:

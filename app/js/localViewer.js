@@ -6,7 +6,8 @@ var viewer = {
     backgroundColor: 'rgb(25,25,25)',
     lineColor: 'white',
     obstacleColor: 'red',
-    obstacleDistanceLimit: 150
+    obstacleDistanceLimit: 300,
+    showObstacles: true
 };
 
 var key = {
@@ -15,7 +16,8 @@ var key = {
     "backward": "S".charCodeAt(),
     "left": "A".charCodeAt(),
     "right": "D".charCodeAt(),
-  "stop": " ".charCodeAt()
+  "stop": " ".charCodeAt(),
+  "toggleObstacles": "O".charCodeAt()
 };
 
 function LocalViewer(cnv) {
@@ -127,7 +129,8 @@ LocalViewer.prototype.drawHistory = function () {
     // runningTotal.angle = this.robot.history[i].angle;
 
     this.drawPathPoint();
-    this.drawObstacle(this.robot.history[i]);
+    if (viewer.showObstacles)
+      this.drawObstacle(this.robot.history[i]);
   }
 
   // Reset origin
@@ -199,5 +202,11 @@ LocalViewer.prototype.keys = function (evt) {
         this.robotController.backward();
         break;
     }
+  }
+
+  switch(evt.keyCode) {
+    case key.toggleObstacles:
+      viewer.showObstacles = !viewer.showObstacles;
+      break;
   }
 }
