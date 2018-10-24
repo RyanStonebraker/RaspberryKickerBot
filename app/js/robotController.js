@@ -108,10 +108,10 @@ RobotController.prototype.forward = function (stepSize = 20) {
       "distance": stepSize
     });
 
-    this.robot.history.unshift({
-      "x": xMove,
-      "y": -yMove
-    });
+    // this.robot.history.unshift({
+    //   "x": xMove,
+    //   "y": -yMove
+    // });
   }
 }
 
@@ -130,10 +130,10 @@ RobotController.prototype.backward = function (stepSize = 20) {
       "distance": stepSize
     });
 
-    this.robot.history.unshift({
-      "x": xMove,
-      "y": -yMove
-    });
+    // this.robot.history.unshift({
+    //   "x": xMove,
+    //   "y": -yMove
+    // });
   }
 }
 
@@ -142,7 +142,7 @@ RobotController.prototype.right = function (stepSize = 5) {
     "angle": -stepSize
   });
 
-  this.robot.angle += stepSize;
+  // this.robot.angle += stepSize;
 }
 
 RobotController.prototype.left = function (stepSize = 5) {
@@ -150,5 +150,5 @@ RobotController.prototype.left = function (stepSize = 5) {
     "angle": stepSize
   });
 
-  this.robot.angle -= stepSize;
+  // this.robot.angle -= stepSize;
 }

@@ -1,6 +1,6 @@
 import requests
 from time import sleep
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 import math
 
@@ -24,17 +24,17 @@ telemetry = {
     "ultrasonic": 0
 }
 
-GPIO.setmode(GPIO.BOARD)
-
-# Right Motor
-GPIO.setup(3, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(7, GPIO.OUT) # Enable 1
-
-# Left Motor
-GPIO.setup(8, GPIO.OUT) # Enable 2
-GPIO.setup(10, GPIO.OUT)
-GPIO.setup(12, GPIO.OUT)
+# GPIO.setmode(GPIO.BOARD)
+#
+# # Right Motor
+# GPIO.setup(3, GPIO.OUT)
+# GPIO.setup(5, GPIO.OUT)
+# GPIO.setup(7, GPIO.OUT) # Enable 1
+#
+# # Left Motor
+# GPIO.setup(8, GPIO.OUT) # Enable 2
+# GPIO.setup(10, GPIO.OUT)
+# GPIO.setup(12, GPIO.OUT)
 
 def setRightForward():
     GPIO.output(3, True)
@@ -112,20 +112,20 @@ def executeCommand(command):
     clearTelemery()
     cParams = command['parameters']
     if command['instruction'] == "forward":
-        driveForward(abs(cParams['distance']/config['velocity']))
-        telemetry['displacement']['x'] = config['velocity'] * sin(telemetry['angle'] * math.pi / 180)
-        telemetry['displacement']['y'] = -config['velocity'] * cos(telemetry['angle'] * math.pi / 180)
+        # driveForward(abs(cParams['distance']/config['velocity']))
+        telemetry['displacement']['x'] = -config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['y'] = config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "backward":
-        driveBackward(abs(cParams['distance']/config['velocity']))
-        telemetry['displacement']['x'] = -config['velocity'] * sin(telemetry['angle'] * math.pi / 180)
-        telemetry['displacement']['y'] = config['velocity'] * cos(telemetry['angle'] * math.pi / 180)
+        # driveBackward(abs(cParams['distance']/config['velocity']))
+        telemetry['displacement']['x'] = config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['y'] = -config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "rotate":
         angleTime = abs(cParams['angle']/config['angularVelocity'])
         telemetry['angle'] += cParams['angle']
-        if cParams['angle'] < 0:
-            rotateRight(angleTime)
-        else:
-            rotateLeft(angleTime)
+        # if cParams['angle'] < 0:
+        #     rotateRight(angleTime)
+        # else:
+        #     rotateLeft(angleTime)
 
 # Listen, execute, respond loop
 while True:

@@ -115,7 +115,7 @@ LocalViewer.prototype.drawRobot = function () {
   let robotMidY = this.robot.screenPosition.y + this.robot.height/2;
   this.localCtx.save();
   this.localCtx.translate(robotMidX, robotMidY);
-  this.localCtx.rotate(this.robot.angle * Math.PI/180);
+  this.localCtx.rotate(-this.robot.angle * Math.PI/180);
   this.localCtx.translate(-robotMidX, -robotMidY);
 
   this.localCtx.fillStyle = viewer.backgroundColor;
