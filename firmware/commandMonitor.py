@@ -127,6 +127,7 @@ def executeCommand(command):
         else:
             rotateLeft(angleTime)
 
+# Listen, execute, respond loop
 while True:
     currentFeed = requests.get(config['feedURL']).json()
     if not currentFeed['waitingForPi']:
@@ -137,6 +138,10 @@ while True:
         for command in currentFeed['commands'][len(commandHistory):]:
             commandHistory.append(command)
             executeCommand(command)
-        telemetryResponder.sendTelemetry(telemetry, config['postURL'])
+        telemetrySent = telemetryResponder.sendTelemetry(telemetry, config['postURL'])
+
+        if not telemetrySent:
+            print("ERROR: TELEMETRY NOT SENT:", telemetrySent)
+            sleep(0.5)
 
     sleep(0.1)

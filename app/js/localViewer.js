@@ -30,6 +30,10 @@ function LocalViewer(cnv) {
     this.localCtx.clearRect(0, 0, viewer.width, viewer.height);
   }
   this.robotController = new RobotController(this.robot);
+
+  this.telemetryMonitor = new TelemetryMonitor(this.robot);
+  this.telemetryMonitor.monitor();
+
   this.updateLocalViewer();
   window.addEventListener('keydown', this.keys.bind(this), true);
   document.querySelector("section.manual-mode").addEventListener("click", this.fullToggleManual.bind(this));
@@ -44,7 +48,8 @@ LocalViewer.prototype.robot = {
     "x": 0,
     "y": 0
   },
-  "history": []
+  "history": [],
+  "telemetry": {}
 };
 
 LocalViewer.prototype.updateLocalViewer = function () {
