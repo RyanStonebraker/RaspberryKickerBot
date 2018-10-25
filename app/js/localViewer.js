@@ -5,6 +5,7 @@ var viewer = {
     minHistoryPrecision: 0,
     backgroundColor: 'rgb(25,25,25)',
     lineColor: 'white',
+    robotColor: 'white',
     obstacleColor: 'red',
     obstacleDistanceLimit: 300,
     showObstacles: true
@@ -64,15 +65,16 @@ function LocalViewer(cnv) {
 }
 
 LocalViewer.prototype.robot = {
-  "width": 200,
-  "height": 100,
+  "width": 145,
+  "height": 200,
   "angle": 0,
   "screenPosition": {
     "x": 0,
     "y": 0
   },
   "history": [],
-  "telemetry": {}
+  "telemetry": {},
+  "collided": false
 };
 
 LocalViewer.prototype.updateLocalViewer = function () {
@@ -111,27 +113,47 @@ LocalViewer.prototype.drawPathPoint = function () {
 
 // draws history points with 0,0 as center and +,+ to the right, top
 LocalViewer.prototype.drawHistory = function () {
-  // let runningTotal = {
-  //   "x": 0,
-  //   "y": 0,
-  //   "angle": 0
-  // };
+  let obstacleField = [];
+  let fixedPosition = {
+    "x": 0,
+    "y": 0
+  };
+
   for (let i = 0; i < this.robot.history.length; ++i) {
     this.localCtx.translate(-this.robot.history[i].x, this.robot.history[i].y);
-    // if ((runningTotal.x || runningTotal.y) && this.relDistance(runningTotal) < viewer.minHistoryPrecision) {
-    //   runningTotal.x += this.robot.history[i].x;
-    //   runningTotal.y += this.robot.history[i].y;
-    //   runningTotal.angle = this.robot.history[i].angle;
-    //   continue;
-    // }
-    // runningTotal.x = this.robot.history[i].x;
-    // runningTotal.y = this.robot.history[i].y;
-    // runningTotal.angle = this.robot.history[i].angle;
-
     this.drawPathPoint();
-    if (viewer.showObstacles)
+    if (viewer.showObstacles) {
       this.drawObstacle(this.robot.history[i]);
+      // fixedPosition.x += this.robot.history[i].x;
+      // fixedPosition.y += this.robot.history[i].y;
+      //
+      // let distanceToObstacle = this.robot.history[i].obstacle;
+      // if (distanceToObstacle && distanceToObstacle < viewer.obstacleDistanceLimit) {
+      //   let relXDist = Math.sin(this.robot.history[i].angle * Math.PI/180) * this.robot.history[i].obstacle;
+      //   let relYDist = Math.cos(this.robot.history[i].angle * Math.PI/180) * this.robot.history[i].obstacle;
+      //   obstacleField.push({
+      //     "x": fixedPosition.x + relXDist,
+      //     "y": fixedPosition.y + relYDist
+      //   });
+      // }
+    }
   }
+
+  // let centerX = fixedPosition.x + this.robot.width/2;
+  // let centerY = fixedPosition.y + this.robot.height/2;
+  //
+  // this.robot.collided = false;
+  // viewer.robotColor = 'white';
+  // for (let j = 0; j < obstacleField.length; ++j) {
+  //   let obstacle = obstacleField[j];
+  //   // if (obstacle.x <= rightSide && obstacle.x >= leftSide && obstacle.y <= bottom && obstacle.y >= top) {
+  //   if (Math.abs(obstacle.x) <= this.robot.width/2 && Math.abs(obstacle.y) <= this.robot.height/2) {
+  //     viewer.robotColor = 'red';
+  //     this.robot.collided = true;
+  //     // console.log({centerX, centerY}, obstacle);
+  //     break;
+  //   }
+  // }
 
   // Reset origin
   for (let i = 0; i < this.robot.history.length; ++i)
@@ -139,7 +161,7 @@ LocalViewer.prototype.drawHistory = function () {
 }
 
 LocalViewer.prototype.drawRobot = function () {
-  this.localCtx.strokeStyle = viewer.lineColor;
+  this.localCtx.strokeStyle = viewer.robotColor;
   let robotMidX = this.robot.screenPosition.x + this.robot.width/2;
   let robotMidY = this.robot.screenPosition.y + this.robot.height/2;
   this.localCtx.save();
@@ -150,7 +172,14 @@ LocalViewer.prototype.drawRobot = function () {
   this.localCtx.fillStyle = viewer.backgroundColor;
   this.localCtx.fillRect(this.robot.screenPosition.x, this.robot.screenPosition.y, this.robot.width, this.robot.height);
 
+  this.localCtx.lineWidth = 5;
   this.localCtx.strokeRect(this.robot.screenPosition.x, this.robot.screenPosition.y, this.robot.width, this.robot.height);
+
+  this.localCtx.beginPath();
+  this.localCtx.moveTo(this.robot.screenPosition.x + this.robot.width/4, this.robot.screenPosition.y + 5 * this.robot.height/8);
+  this.localCtx.lineTo(this.robot.screenPosition.x + this.robot.width/2, this.robot.screenPosition.y + 3 * this.robot.height/8);
+  this.localCtx.lineTo(this.robot.screenPosition.x + 3 * this.robot.width/4, this.robot.screenPosition.y + 5 * this.robot.height/8);
+  this.localCtx.stroke();
   this.localCtx.restore();
 }
 

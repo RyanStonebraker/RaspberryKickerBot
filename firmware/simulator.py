@@ -1,6 +1,5 @@
 import requests
 from time import sleep
-import RPi.GPIO as GPIO
 
 import math
 
@@ -26,82 +25,6 @@ telemetry = {
     "ultrasonic": 0
 }
 
-GPIO.setmode(GPIO.BOARD)
-
-# Right Motor
-GPIO.setup(3, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(7, GPIO.OUT) # Enable 1
-
-# Left Motor
-GPIO.setup(8, GPIO.OUT) # Enable 2
-GPIO.setup(10, GPIO.OUT)
-GPIO.setup(12, GPIO.OUT)
-
-def setRightForward():
-    GPIO.output(3, True)
-    GPIO.output(5, False)
-
-def setRightBackward():
-    GPIO.output(3, False)
-    GPIO.output(5, True)
-
-def setLeftForward():
-    GPIO.output(10, True)
-    GPIO.output(12, False)
-
-def setLeftBackward():
-    GPIO.output(10, False)
-    GPIO.output(12, True)
-
-def enableMotors():
-    GPIO.output(7, True)
-    GPIO.output(8, True)
-
-def disableMotors():
-    GPIO.output(7, False)
-    GPIO.output(8, False)
-
-def driveForward(driveTime=1, power=50):
-    pwm.start(0)
-    setRightForward()
-    setLeftForward()
-    pwm.ChangeDutyCycle(power)
-    enableMotors()
-    sleep(driveTime)
-    disableMotors()
-    pwm.stop()
-
-def driveBackward(driveTime=1, power=50):
-    pwm.start(0)
-    setRightBackward()
-    setLeftBackward()
-    pwm.ChangeDutyCycle(power)
-    enableMotors()
-    sleep(driveTime)
-    disableMotors()
-    pwm.stop()
-
-def rotateLeft(rotateTime=1, power=50):
-    pwm.start(0)
-    setRightForward()
-    setLeftBackward()
-    pwm.ChangeDutyCycle(power)
-    enableMotors()
-    sleep(rotateTime)
-    disableMotors()
-    pwm.stop()
-
-def rotateRight(rotateTime=1, power=50):
-    pwm.start(0)
-    setRightBackward()
-    setLeftForward()
-    pwm.ChangeDutyCycle(power)
-    enableMotors()
-    sleep(rotateTime)
-    disableMotors()
-    pwm.stop()
-
 def clearTelemery():
     telemetry['displacement'] = {
         "x": 0,
@@ -114,22 +37,16 @@ def executeCommand(command):
     clearTelemery()
     cParams = command['parameters']
     if command['instruction'] == "forward":
-        driveForward(abs(cParams['distance']/config['velocity']))
         telemetry['displacement']['x'] = -config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
         telemetry['displacement']['y'] = config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
-        # telemetry['ultrasonic'] = 0
+        telemetry['ultrasonic'] = random.random() * 50 + 200 if random.random() * 100 - 95 > 0 else 0
     elif command['instruction'] == "backward":
-        driveBackward(abs(cParams['distance']/config['velocity']))
         telemetry['displacement']['x'] = config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
         telemetry['displacement']['y'] = -config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "rotate":
         angleTime = abs(cParams['angle']/config['angularVelocity'])
         telemetry['angle'] += cParams['angle']
-        # telemetry['ultrasonic'] = 0
-        if cParams['angle'] < 0:
-            rotateRight(angleTime)
-        else:
-            rotateLeft(angleTime)
+        telemetry['ultrasonic'] = random.random() * 50 + 200 if random.random() * 100 - 93 > 0 else 0
 
 # Listen, execute, respond loop
 while True:
