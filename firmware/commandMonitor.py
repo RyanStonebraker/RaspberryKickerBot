@@ -62,45 +62,33 @@ def disableMotors():
     GPIO.output(7, False)
     GPIO.output(8, False)
 
-def driveForward(driveTime=1, power=50):
-    pwm.start(0)
+def driveForward(driveTime=1):
     setRightForward()
     setLeftForward()
-    pwm.ChangeDutyCycle(power)
     enableMotors()
     sleep(driveTime)
     disableMotors()
-    pwm.stop()
 
-def driveBackward(driveTime=1, power=50):
-    pwm.start(0)
+def driveBackward(driveTime=1):
     setRightBackward()
     setLeftBackward()
-    pwm.ChangeDutyCycle(power)
     enableMotors()
     sleep(driveTime)
     disableMotors()
-    pwm.stop()
 
-def rotateLeft(rotateTime=1, power=50):
-    pwm.start(0)
+def rotateLeft(rotateTime=1):
     setRightForward()
     setLeftBackward()
-    pwm.ChangeDutyCycle(power)
     enableMotors()
     sleep(rotateTime)
     disableMotors()
-    pwm.stop()
 
-def rotateRight(rotateTime=1, power=50):
-    pwm.start(0)
+def rotateRight(rotateTime=1):
     setRightBackward()
     setLeftForward()
-    pwm.ChangeDutyCycle(power)
     enableMotors()
     sleep(rotateTime)
     disableMotors()
-    pwm.stop()
 
 def clearTelemery():
     telemetry['displacement'] = {
