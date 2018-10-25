@@ -11,10 +11,10 @@ import random
 commandHistory = []
 
 config = {
-    "velocity": 10, # cm/s
+    "velocity": 30, # cm/s
     "angularVelocity": 20,
     "feedURL": "http://127.0.0.1:5000/telemetry",
-    "postURL": "http://localhost:5000/telemetry/post"
+    "postURL": "http://127.0.0.1:5000/telemetry/post"
 }
 
 telemetry = {
@@ -25,18 +25,6 @@ telemetry = {
     "angle": 0,
     "ultrasonic": 0
 }
-
-GPIO.setmode(GPIO.BOARD)
-
-# Right Motor
-GPIO.setup(3, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(7, GPIO.OUT) # Enable 1
-
-# Left Motor
-GPIO.setup(8, GPIO.OUT) # Enable 2
-GPIO.setup(10, GPIO.OUT)
-GPIO.setup(12, GPIO.OUT)
 
 def setRightForward():
     GPIO.output(3, True)
@@ -119,21 +107,33 @@ def executeCommand(command):
         else:
             rotateLeft(angleTime)
 
-# Listen, execute, respond loop
-while True:
-    currentFeed = requests.get(config['feedURL']).json()
-    if not currentFeed['waitingForPi']:
-        sleep(0.05)
-        continue
+if __name__ == "__main__":
+    GPIO.setmode(GPIO.BOARD)
 
-    if len(currentFeed['commands']) > len(commandHistory):
-        for command in currentFeed['commands'][len(commandHistory):]:
-            commandHistory.append(command)
-            executeCommand(command)
-        telemetrySent = telemetryResponder.sendTelemetry(telemetry, config['postURL'])
+    # Right Motor
+    GPIO.setup(3, GPIO.OUT)
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.setup(7, GPIO.OUT) # Enable 1
 
-        if not telemetrySent:
-            print("ERROR: TELEMETRY NOT SENT:", telemetrySent)
-            sleep(0.1)
+    # Left Motor
+    GPIO.setup(8, GPIO.OUT) # Enable 2
+    GPIO.setup(10, GPIO.OUT)
+    GPIO.setup(12, GPIO.OUT)
 
-    sleep(0.01)
+    while True:
+        currentFeed = requests.get(config['feedURL']).json()
+        if not currentFeed['waitingForPi']:
+            sleep(0.05)
+            continue
+
+        if len(currentFeed['commands']) > len(commandHistory):
+            for command in currentFeed['commands'][len(commandHistory):]:
+                commandHistory.append(command)
+                executeCommand(command)
+            telemetrySent = telemetryResponder.sendTelemetry(telemetry, config['postURL'])
+
+            if not telemetrySent:
+                print("ERROR: TELEMETRY NOT SENT:", telemetrySent)
+                sleep(0.05)
+
+        sleep(0.01)
