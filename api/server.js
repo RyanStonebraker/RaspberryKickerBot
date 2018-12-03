@@ -72,19 +72,19 @@ router.post('/post', function (request, response) {
 
   feed.push(currentData);
 
-  absoluteData.position.x += currentData.x;
-  absoluteData.position.y += currentData.y;
+  if (postData["sender"]["type"] != "command") {
+    absoluteData.position.x += currentData.displacement.x;
+    absoluteData.position.y += currentData.displacement.y;
 
-  let relXDist = Math.sin(currentData.angle * Math.PI/180) * currentData.obstacle;
-  let relYDist = Math.cos(currentData.angle * Math.PI/180) * currentData.obstacle;
-  absoluteData.obstacleField.push({
-    "x": absoluteData.position.x + relXDist,
-    "y": absoluteData.position.y + relYDist
-  });
+    if (currentData.ultrasonic) {
+      let relXDist = Math.sin(currentData.angle * Math.PI/180) * currentData.ultrasonic;
+      let relYDist = Math.cos(currentData.angle * Math.PI/180) * currentData.ultrasonic;
 
-  for (obstacle in absoluteData.obstacleField) {
-    obstacle.x += absoluteData.position.x;
-    obstacle.y += absoluteData.position.y;
+      absoluteData.obstacleField.push({
+        "x": absoluteData.position.x + relXDist,
+        "y": absoluteData.position.y + relYDist
+      });
+    }
   }
 
   if (id === "rpi.local")
@@ -96,7 +96,7 @@ router.post('/post', function (request, response) {
 });
 
 router.get('/absolute', function(request, response) {
-  response.send(obstacleField);
+  response.send(absoluteData);
 });
 
 app.use('/telemetry', router);
