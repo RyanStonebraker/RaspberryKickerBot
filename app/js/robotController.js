@@ -93,7 +93,7 @@ RobotController.prototype.pushCommand = function (command, parameters) {
   request.end();
 }
 
-RobotController.prototype.forward = function (stepSize = 20) {
+RobotController.prototype.forward = function (stepSize = 10) {
   let xMove = stepSize * Math.sin(this.robot.angle * Math.PI / 180);
   let yMove = -stepSize * Math.cos(this.robot.angle * Math.PI / 180);
   if (!this.status.connected) {
@@ -115,7 +115,7 @@ RobotController.prototype.forward = function (stepSize = 20) {
   }
 }
 
-RobotController.prototype.backward = function (stepSize = 20) {
+RobotController.prototype.backward = function (stepSize = 10) {
   let xMove = -stepSize * Math.sin(this.robot.angle * Math.PI / 180);
   let yMove = stepSize * Math.cos(this.robot.angle * Math.PI / 180);
   if (!this.status.connected) {

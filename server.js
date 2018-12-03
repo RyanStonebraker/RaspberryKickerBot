@@ -32,6 +32,14 @@ var robotFeed = {
   ]
 };
 
+var absoluteData = {
+  "position": {
+    "x": 0,
+    "y": 0
+  },
+  "obstacleField": []
+};
+
 router.get('/', function (request, response) {
   response.json(robotFeed);
 });
@@ -64,12 +72,31 @@ router.post('/post', function (request, response) {
 
   feed.push(currentData);
 
+  absoluteData.position.x += currentData.x;
+  absoluteData.position.y += currentData.y;
+
+  let relXDist = Math.sin(currentData.angle * Math.PI/180) * currentData.obstacle;
+  let relYDist = Math.cos(currentData.angle * Math.PI/180) * currentData.obstacle;
+  absoluteData.obstacleField.push({
+    "x": absoluteData.position.x + relXDist,
+    "y": absoluteData.position.y + relYDist
+  });
+
+  for (obstacle in absoluteData.obstacleField) {
+    obstacle.x += absoluteData.position.x;
+    obstacle.y += absoluteData.position.y;
+  }
+
   if (id === "rpi.local")
     robotFeed.waitingForPi = false;
   else
     robotFeed.waitingForPi = true;
 
   response.send(robotFeed);
+});
+
+router.get('/absolute', function(request, response) {
+  response.send(obstacleField);
 });
 
 app.use('/telemetry', router);
