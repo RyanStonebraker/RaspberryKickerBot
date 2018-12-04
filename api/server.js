@@ -95,6 +95,17 @@ router.post('/post', function (request, response) {
   response.send(robotFeed);
 });
 
+router.get('/commands', function(request, response) {
+  let numberOfUnexecuted = robotFeed.commands.length - robotFeed.telemetry.length;
+  if (numberOfUnexecuted < 0) {
+    console.log("Viewer ahead of commands!");
+    response.send();
+    return;
+  }
+  let unexecutedCommands = robotFeed.commands.slice(robotFeed.telemetry.length, numberOfUnexecuted);
+  response.send({waitingForPi: robotFeed.waitingForPi, commands: unexecutedCommands});
+});
+
 router.get('/absolute', function(request, response) {
   response.send(absoluteData);
 });

@@ -77,5 +77,5 @@ TelemetryMonitor.prototype.monitor = function () {
         self.robot.angle = self.robot.telemetry.telemetry[i].angle % 360;
       }
     }
-  }, 10);
+  }, 5);
 }

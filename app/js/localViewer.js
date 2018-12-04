@@ -80,6 +80,7 @@ LocalViewer.prototype.robot = {
     "y": 0
   },
   "obstacleField": [],
+  "currentCommand": 0,
   "collided": false
 };
 
@@ -209,12 +210,8 @@ LocalViewer.prototype.keys = function (evt) {
         this.robotController.backward();
         break;
       case key.autonomous:
-        this.robotController.followPath([
-          {x: 50, y: 50},
-          {x: 100, y: 100},
-          {x: 100, y: -100},
-          {x: -100, y: 0}
-        ]);
+        this.robotController.randomWalk();
+        break;
     }
   }
 

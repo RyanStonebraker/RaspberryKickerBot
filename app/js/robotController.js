@@ -69,6 +69,8 @@ RobotController.prototype.pushCommand = function (command, parameters) {
   };
   fullCommand.instruction = command;
   fullCommand.parameters = parameters;
+  fullCommand.commandID = this.robot.currentCommand;
+  ++this.robot.currentCommand;
 
   var options = {
     hostname: '127.0.0.1',
@@ -188,4 +190,15 @@ RobotController.prototype.followPath = async function (pathArray)  {
     await sleep(100);
     ++currentPathPoint;
   }
+}
+
+RobotController.prototype.randomWalk = function (step = 20, movements = 100) {
+  let randomWalk = [];
+  for (let i = 0; i < movements; ++i) {
+    let walkAngle = Math.random() * 360;
+    let xMove = step * Math.sin(walkAngle * Math.PI / 180);
+    let yMove = -step * Math.cos(walkAngle * Math.PI / 180);
+    randomWalk.push({x: xMove, y: yMove});
+  }
+  this.followPath(randomWalk);
 }

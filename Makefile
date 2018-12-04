@@ -1,8 +1,17 @@
 start:
-	node api/server.js & sleep 2 && python3 firmware/commandMonitor.py && electron . &
+	node api/server.js & electron .
+
+server:
+	node api/server.js &
+
+backend:
+	python3 firmware/commandMonitor.py &
 
 simulation:
 	node api/server.js & sleep 2 && python3 firmware/simulator.py & electron . &
+
+backend_sim:
+	python3 firmware/simulator.py
 
 electron:
 	electron . &

@@ -8,12 +8,12 @@ import telemetryResponder
 
 import random
 
-commandHistory = []
+commandCount = 0
 
 config = {
     "velocity": 30, # cm/s
     "angularVelocity": 20,
-    "feedURL": "http://127.0.0.1:5000/telemetry",
+    "feedURL": "http://127.0.0.1:5000/telemetry/commands",
     "postURL": "http://127.0.0.1:5000/telemetry/post"
 }
 
@@ -118,14 +118,14 @@ if __name__ == "__main__":
     GPIO.setmode(GPIO.BOARD)
 
     # Right Motor
-    GPIO.setup(3, GPIO.OUT)
-    GPIO.setup(5, GPIO.OUT)
-    GPIO.setup(7, GPIO.OUT) # Enable 1
+    GPIO.setup(rightMotor1, GPIO.OUT)
+    GPIO.setup(rightMotor2, GPIO.OUT)
+    GPIO.setup(rightMotorEnable, GPIO.OUT)
 
     # Left Motor
-    GPIO.setup(8, GPIO.OUT) # Enable 2
-    GPIO.setup(10, GPIO.OUT)
-    GPIO.setup(12, GPIO.OUT)
+    GPIO.setup(leftMotor1, GPIO.OUT)
+    GPIO.setup(leftMotor2, GPIO.OUT)
+    GPIO.setup(leftMotorEnable, GPIO.OUT)
 
     while True:
         currentFeed = requests.get(config['feedURL']).json()
@@ -133,14 +133,14 @@ if __name__ == "__main__":
             sleep(0.05)
             continue
 
-        if len(currentFeed['commands']) > len(commandHistory):
-            for command in currentFeed['commands'][len(commandHistory):]:
-                commandHistory.append(command)
+        if len(currentFeed['commands']) > commandCount:
+            for command in currentFeed['commands'][commandCount:]:
+                commandCount += 1
                 executeCommand(command)
             telemetrySent = telemetryResponder.sendTelemetry(telemetry, config['postURL'])
 
             if not telemetrySent:
                 print("ERROR: TELEMETRY NOT SENT:", telemetrySent)
-                sleep(0.05)
+                sleep(0.1)
 
         sleep(0.01)
