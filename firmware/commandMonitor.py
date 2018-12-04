@@ -26,29 +26,36 @@ telemetry = {
     "ultrasonic": 0
 }
 
+rightMotor1 = 3
+rightMotor2 = 5
+rightMotorEnable = 7
+leftMotor1 = 10
+leftMotor2 = 12
+leftMotorEnable = 8
+
 def setRightForward():
-    GPIO.output(3, True)
-    GPIO.output(5, False)
+    GPIO.output(rightMotor1, True)
+    GPIO.output(rightMotor2, False)
 
 def setRightBackward():
-    GPIO.output(3, False)
-    GPIO.output(5, True)
+    GPIO.output(rightMotor1, False)
+    GPIO.output(rightMotor2, True)
 
 def setLeftForward():
-    GPIO.output(10, True)
-    GPIO.output(12, False)
+    GPIO.output(leftMotor1, True)
+    GPIO.output(leftMotor2, False)
 
 def setLeftBackward():
-    GPIO.output(10, False)
-    GPIO.output(12, True)
+    GPIO.output(leftMotor1, False)
+    GPIO.output(leftMotor2, True)
 
 def enableMotors():
-    GPIO.output(7, True)
-    GPIO.output(8, True)
+    GPIO.output(rightMotorEnable, True)
+    GPIO.output(leftMotorEnable, True)
 
 def disableMotors():
-    GPIO.output(7, False)
-    GPIO.output(8, False)
+    GPIO.output(rightMotorEnable, False)
+    GPIO.output(leftMotorEnable, False)
 
 def driveForward(driveTime=1):
     setRightForward()

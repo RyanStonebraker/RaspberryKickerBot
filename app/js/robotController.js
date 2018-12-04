@@ -18,7 +18,6 @@ RobotController.prototype.status = {
 };
 
 RobotController.prototype.initConnection = function () {
-  // TODO: Establish handshake with robot
   this.status.connected = true;
   this.reloadConnectionStatus();
 }
@@ -40,7 +39,6 @@ RobotController.prototype.reloadConnectionStatus = function () {
 RobotController.prototype.toggleManualMode = function () {
   if (!this.status.manualMode) {
     this.status.manualMode = true;
-    // TODO: Put into manual mode
   }
   else {
     this.status.manualMode = false;
@@ -107,11 +105,6 @@ RobotController.prototype.forward = function (stepSize = 10) {
     this.pushCommand("forward", {
       "distance": stepSize
     });
-
-    // this.robot.history.unshift({
-    //   "x": xMove,
-    //   "y": -yMove
-    // });
   }
 }
 
@@ -129,11 +122,6 @@ RobotController.prototype.backward = function (stepSize = 10) {
     this.pushCommand("backward", {
       "distance": stepSize
     });
-
-    // this.robot.history.unshift({
-    //   "x": xMove,
-    //   "y": -yMove
-    // });
   }
 }
 
@@ -146,8 +134,6 @@ RobotController.prototype.right = function (stepSize = 5) {
       "angle": -stepSize
     });
   }
-
-  // this.robot.angle += stepSize;
 }
 
 RobotController.prototype.left = function (stepSize = 5) {
@@ -159,5 +145,47 @@ RobotController.prototype.left = function (stepSize = 5) {
       "angle": stepSize
     });
   }
-  // this.robot.angle -= stepSize;
+}
+
+RobotController.prototype.relMoveTo = function (point) {
+  let angle = Math.atan(point.y/point.x) * 180/Math.PI;
+  let distance = Math.sqrt(Math.pow(point.y, 2) + Math.pow(point.x, 2));
+  if (!angle && !distance)
+    return;
+  if (angle > 0)
+    this.left(angle);
+  else
+    this.right(-angle);
+
+  this.forward(distance);
+}
+
+RobotController.prototype.absMoveTo = function (point) {
+  let xDiff = point.x - this.robot.absolutePosition.x;
+  let yDiff = point.y - this.robot.absolutePosition.y;
+
+  this.relMoveTo({x: xDiff, y: yDiff});
+}
+
+RobotController.prototype.waitForConfirm = function () {
+  return new Promise((resolve, reject) => {
+    if (this.robot.history.length === this.robot.telemetry.length)
+      resolve();
+  });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+RobotController.prototype.followPath = async function (pathArray)  {
+  let currentPathPoint = 0;
+  while (currentPathPoint < pathArray.length) {
+    this.relMoveTo(pathArray[currentPathPoint]);
+    // this.waitForConfirm().then(() => {
+    //   ++currentPathPoint;
+    // });
+    await sleep(100);
+    ++currentPathPoint;
+  }
 }

@@ -18,7 +18,8 @@ var key = {
     "left": "A".charCodeAt(),
     "right": "D".charCodeAt(),
   "stop": " ".charCodeAt(),
-  "toggleObstacles": "O".charCodeAt()
+  "toggleObstacles": "O".charCodeAt(),
+  "autonomous": "1".charCodeAt()
 };
 
 function LocalViewer(cnv) {
@@ -74,6 +75,11 @@ LocalViewer.prototype.robot = {
   },
   "history": [],
   "telemetry": {},
+  "absolutePosition": {
+    "x": 0,
+    "y": 0
+  },
+  "obstacleField": [],
   "collided": false
 };
 
@@ -124,36 +130,8 @@ LocalViewer.prototype.drawHistory = function () {
     this.drawPathPoint();
     if (viewer.showObstacles) {
       this.drawObstacle(this.robot.history[i]);
-      // fixedPosition.x += this.robot.history[i].x;
-      // fixedPosition.y += this.robot.history[i].y;
-      //
-      // let distanceToObstacle = this.robot.history[i].obstacle;
-      // if (distanceToObstacle && distanceToObstacle < viewer.obstacleDistanceLimit) {
-      //   let relXDist = Math.sin(this.robot.history[i].angle * Math.PI/180) * this.robot.history[i].obstacle;
-      //   let relYDist = Math.cos(this.robot.history[i].angle * Math.PI/180) * this.robot.history[i].obstacle;
-      //   obstacleField.push({
-      //     "x": fixedPosition.x + relXDist,
-      //     "y": fixedPosition.y + relYDist
-      //   });
-      // }
     }
   }
-
-  // let centerX = fixedPosition.x + this.robot.width/2;
-  // let centerY = fixedPosition.y + this.robot.height/2;
-  //
-  // this.robot.collided = false;
-  // viewer.robotColor = 'white';
-  // for (let j = 0; j < obstacleField.length; ++j) {
-  //   let obstacle = obstacleField[j];
-  //   // if (obstacle.x <= rightSide && obstacle.x >= leftSide && obstacle.y <= bottom && obstacle.y >= top) {
-  //   if (Math.abs(obstacle.x) <= this.robot.width/2 && Math.abs(obstacle.y) <= this.robot.height/2) {
-  //     viewer.robotColor = 'red';
-  //     this.robot.collided = true;
-  //     // console.log({centerX, centerY}, obstacle);
-  //     break;
-  //   }
-  // }
 
   // Reset origin
   for (let i = 0; i < this.robot.history.length; ++i)
@@ -230,6 +208,13 @@ LocalViewer.prototype.keys = function (evt) {
       case key.backward:
         this.robotController.backward();
         break;
+      case key.autonomous:
+        this.robotController.followPath([
+          {x: 50, y: 50},
+          {x: 100, y: 100},
+          {x: 100, y: -100},
+          {x: -100, y: 0}
+        ]);
     }
   }
 
