@@ -11,7 +11,7 @@ import random
 commandCount = 0
 
 config = {
-    "velocity": 1,
+    "velocity": 30,
     "angularVelocity": 20,
     "feedURL": "http://192.168.43.152:5000/telemetry",
     "postURL": "http://192.168.43.152:5000/telemetry/post"
@@ -98,12 +98,12 @@ def executeCommand(command):
     cParams = command['parameters']
     if command['instruction'] == "forward":
         driveForward(abs(cParams['distance']/config['velocity']))
-        telemetry['displacement']['x'] = -cParams['distance'] * config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
-        telemetry['displacement']['y'] = cParams['distance'] * config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['x'] = -cParams['distance'] * math.sin(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['y'] = cParams['distance'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "backward":
         driveBackward(abs(cParams['distance']/config['velocity']))
-        telemetry['displacement']['x'] = cParams['distance'] * config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
-        telemetry['displacement']['y'] = -cParams['distance'] * config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['x'] = cParams['distance'] * math.sin(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['y'] = -cParams['distance'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "rotate":
         angleTime = abs(cParams['angle']/config['angularVelocity'])
         telemetry['angle'] += cParams['angle']
