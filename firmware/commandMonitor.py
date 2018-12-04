@@ -11,10 +11,10 @@ import random
 commandCount = 0
 
 config = {
-    "velocity": 30, # cm/s
+    "velocity": 1,
     "angularVelocity": 20,
-    "feedURL": "http://127.0.0.1:5000/telemetry/commands",
-    "postURL": "http://127.0.0.1:5000/telemetry/post"
+    "feedURL": "http://192.168.43.152:5000/telemetry",
+    "postURL": "http://192.168.43.152:5000/telemetry/post"
 }
 
 telemetry = {
@@ -98,21 +98,16 @@ def executeCommand(command):
     cParams = command['parameters']
     if command['instruction'] == "forward":
         driveForward(abs(cParams['distance']/config['velocity']))
-        telemetry['displacement']['x'] = -config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
-        telemetry['displacement']['y'] = config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
-        # telemetry['ultrasonic'] = 0
+        telemetry['displacement']['x'] = -cParams['distance'] * config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['y'] = cParams['distance'] * config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "backward":
         driveBackward(abs(cParams['distance']/config['velocity']))
-        telemetry['displacement']['x'] = config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
-        telemetry['displacement']['y'] = -config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['x'] = cParams['distance'] * config['velocity'] * math.sin(telemetry['angle'] * math.pi / 180)
+        telemetry['displacement']['y'] = -cParams['distance'] * config['velocity'] * math.cos(telemetry['angle'] * math.pi / 180)
     elif command['instruction'] == "rotate":
         angleTime = abs(cParams['angle']/config['angularVelocity'])
         telemetry['angle'] += cParams['angle']
-        # telemetry['ultrasonic'] = 0
-        if cParams['angle'] < 0:
-            rotateRight(angleTime)
-        else:
-            rotateLeft(angleTime)
+        rotateRight(angleTime) if cParams['angle'] < 0 else rotateLeft(angleTime)
 
 if __name__ == "__main__":
     GPIO.setmode(GPIO.BOARD)
