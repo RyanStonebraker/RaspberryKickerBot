@@ -8,7 +8,8 @@ var viewer = {
     robotColor: 'white',
     obstacleColor: 'red',
     obstacleDistanceLimit: 300,
-    showObstacles: true
+    showObstacles: true,
+    showGrid: true
 };
 
 var key = {
@@ -19,6 +20,7 @@ var key = {
     "right": "D".charCodeAt(),
   "stop": " ".charCodeAt(),
   "toggleObstacles": "O".charCodeAt(),
+  "toggleGrid": "G".charCodeAt(),
   "autonomous": "1".charCodeAt()
 };
 
@@ -61,7 +63,6 @@ function LocalViewer(cnv) {
       }
       self.lastController = xboxController;
     }.bind(self), 5);
-
   });
 }
 
@@ -78,6 +79,16 @@ LocalViewer.prototype.robot = {
   "absolutePosition": {
     "x": 0,
     "y": 0
+  },
+  "extrema": {
+    "max": {
+      "x": 0,
+      "y": 0
+    },
+    "min": {
+      "x": 0,
+      "y": 0
+    },
   },
   "obstacleField": [],
   "currentCommand": 0,
@@ -104,6 +115,32 @@ LocalViewer.prototype.drawScreen = function () {
   this.drawRobot();
 }
 
+LocalViewer.prototype.drawGrid = function () {
+  let unitSize = 100;
+  let xViewIncrements = viewer.width * 10;
+  let yViewIncrements = viewer.height * 10;
+  this.localCtx.strokeStyle = viewer.lineColor;
+
+  let environmentWidth = Math.max(xViewIncrements, viewer.width + (this.robot.extrema.max.x - this.robot.extrema.min.x) * 2);
+  let environmentHeight = Math.max(yViewIncrements, viewer.height + (this.robot.extrema.max.y - this.robot.extrema.min.y) * 2);
+
+  let rows = Math.ceil(environmentHeight/unitSize);
+  let columns = Math.ceil(environmentWidth/unitSize);
+  for (let i = -rows; i < 2 * rows; ++i) {
+    this.localCtx.beginPath();
+    this.localCtx.moveTo(-environmentWidth, i * unitSize);
+    this.localCtx.lineTo(environmentWidth, i * unitSize);
+    this.localCtx.stroke();
+  }
+
+  for (let i = -columns; i < 2 * columns; ++i) {
+    this.localCtx.beginPath();
+    this.localCtx.moveTo(i * unitSize, -environmentHeight);
+    this.localCtx.lineTo(i * unitSize, environmentHeight);
+    this.localCtx.stroke();
+  }
+}
+
 LocalViewer.prototype.relDistance = function (runningTotal) {
   if (!runningTotal)
     return false;
@@ -127,6 +164,9 @@ LocalViewer.prototype.drawHistory = function () {
   };
 
   for (let i = 0; i < this.robot.history.length; ++i) {
+    if (i == this.robot.history.length-1)
+      if (viewer.showGrid)
+        this.drawGrid();
     this.localCtx.translate(-this.robot.history[i].x, this.robot.history[i].y);
     this.drawPathPoint();
     if (viewer.showObstacles) {
@@ -219,5 +259,7 @@ LocalViewer.prototype.keys = function (evt) {
     case key.toggleObstacles:
       viewer.showObstacles = !viewer.showObstacles;
       break;
+    case key.toggleGrid:
+      viewer.showGrid = !viewer.showGrid;
   }
 }

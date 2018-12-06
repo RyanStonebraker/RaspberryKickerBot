@@ -42,7 +42,7 @@ TelemetryMonitor.prototype.getTelemetry = function () {
   });
 }
 
-TelemetryMonitor.prototype.getObstacleField = function () {
+TelemetryMonitor.prototype.getAbsoluteData = function () {
   let self = this;
   http.get({
     hostname: '127.0.0.1',
@@ -55,8 +55,9 @@ TelemetryMonitor.prototype.getObstacleField = function () {
       absFeed += data;
     });
     response.on('end', function () {
-      let currentAbsFeed = JSON.parse(feed);
+      let currentAbsFeed = JSON.parse(absFeed);
       self.robot.absolutePosition = currentAbsFeed.position;
+      self.robot.extrema = currentAbsFeed.extrema;
       self.robot.obstacleField = currentAbsFeed.obstacleField;
     });
   });
@@ -66,6 +67,7 @@ TelemetryMonitor.prototype.monitor = function () {
   let self = this;
   setInterval(function () {
     self.getTelemetry();
+    self.getAbsoluteData();
     if (self.telemetryChanged && self.robot.telemetry.telemetry.length >= self.robot.history.length) {
       for (let i = self.robot.history.length; i < self.robot.telemetry.telemetry.length; ++i) {
         self.robot.history.unshift({

@@ -37,6 +37,16 @@ var absoluteData = {
     "x": 0,
     "y": 0
   },
+  "extrema": {
+    "max": {
+      "x": 0,
+      "y": 0
+    },
+    "min": {
+      "x": 0,
+      "y": 0
+    },
+  },
   "obstacleField": []
 };
 
@@ -84,6 +94,11 @@ router.post('/post', function (request, response) {
         "x": absoluteData.position.x + relXDist,
         "y": absoluteData.position.y + relYDist
       });
+
+      absoluteData.extrema.max.x = Math.max(absoluteData.position.x, absoluteData.extrema.max.x);
+      absoluteData.extrema.max.y = Math.max(-absoluteData.position.y, absoluteData.extrema.max.y);
+      absoluteData.extrema.min.x = Math.min(absoluteData.position.x, absoluteData.extrema.min.x);
+      absoluteData.extrema.min.y = Math.min(-absoluteData.position.y, absoluteData.extrema.min.y);
     }
   }
 
