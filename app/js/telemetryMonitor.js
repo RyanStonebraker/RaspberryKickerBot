@@ -77,6 +77,8 @@ TelemetryMonitor.prototype.monitor = function () {
           'obstacle': self.robot.telemetry.telemetry[i].ultrasonic
         });
         self.robot.angle = self.robot.telemetry.telemetry[i].angle % 360;
+        if (self.robot.angle < 0)
+          self.robot.angle = 360 - self.robot.angle;
       }
     }
   }, 5);

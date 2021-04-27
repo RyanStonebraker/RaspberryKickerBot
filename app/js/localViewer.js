@@ -44,6 +44,7 @@ function LocalViewer(cnv) {
 
   this.updateLocalViewer();
   window.addEventListener('keydown', this.keys.bind(this), true);
+  window.addEventListener("click", this.setWayPoint.bind(this), true);
   document.querySelector("section.manual-mode").addEventListener("click", this.fullToggleManual.bind(this));
   document.querySelector("section.stop-mode").addEventListener("click", this.fullToggleStop.bind(this));
 
@@ -92,7 +93,8 @@ LocalViewer.prototype.robot = {
   },
   "obstacleField": [],
   "currentCommand": 0,
-  "collided": false
+  "collided": false,
+  "waypoints": []
 };
 
 LocalViewer.prototype.updateLocalViewer = function () {
@@ -141,6 +143,27 @@ LocalViewer.prototype.drawGrid = function () {
   }
 }
 
+LocalViewer.prototype.drawWayPoints = function () {
+  this.localCtx.strokeStyle = "yellow";
+  this.localCtx.fillStyle = "orange";
+
+  let currentlyExecuting = false;
+
+  let self = this;
+  this.robot.waypoints.forEach(function (waypoint) {
+    self.localCtx.beginPath();
+    self.localCtx.arc(waypoint.x + viewer.width/2, -waypoint.y + viewer.height/2 + 15, 5, 0, 2 * Math.PI, false);
+    self.localCtx.fill();
+    self.localCtx.stroke();
+
+    if (!currentlyExecuting && !waypoint.executed) {
+      self.robotController.relMoveTo({x: waypoint.relX, y: waypoint.relY});
+      currentlyExecuting = true;
+      waypoint.executed = true;
+    }
+  });
+}
+
 LocalViewer.prototype.relDistance = function (runningTotal) {
   if (!runningTotal)
     return false;
@@ -163,10 +186,18 @@ LocalViewer.prototype.drawHistory = function () {
     "y": 0
   };
 
+  if (this.robot.history.length == 0) {
+    if (viewer.showGrid)
+      this.drawGrid();
+    this.drawWayPoints();
+  }
+
   for (let i = 0; i < this.robot.history.length; ++i) {
-    if (i == this.robot.history.length-1)
+    if (i == this.robot.history.length - 1) {
       if (viewer.showGrid)
         this.drawGrid();
+      this.drawWayPoints();
+    }
     this.localCtx.translate(-this.robot.history[i].x, this.robot.history[i].y);
     this.drawPathPoint();
     if (viewer.showObstacles) {
@@ -224,6 +255,16 @@ LocalViewer.prototype.fullToggleStop = function () {
   let stopMode = document.querySelector("section.stop-mode");
   stopMode.classList.toggle('hide');
   this.robotController.toggleStopMode();
+}
+
+LocalViewer.prototype.setWayPoint = function (evt) {
+  this.robot.waypoints.push({
+    "x": this.robot.absolutePosition.x + evt.clientX - viewer.width/2,
+    "y": this.robot.absolutePosition.y + viewer.height/2 - evt.clientY,
+    "relX": evt.clientX - viewer.width/2,
+    "relY": viewer.height/2 - evt.clientY,
+    "executed": false
+  });
 }
 
 LocalViewer.prototype.keys = function (evt) {
